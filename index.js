@@ -199,7 +199,7 @@ async function run() {
             .json({ message: 'you do not have access to make admin' });
         }
       } else {
-        res.status(404).json({ message: "can't found requester email" });
+        res.status(404).json({ message: "can't found requester admin email" });
       }
     });
 
