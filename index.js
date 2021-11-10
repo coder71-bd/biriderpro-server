@@ -26,13 +26,15 @@ async function run() {
   try {
     await client.connect(); // connect to mongodb.
 
-    const database = client.db('biriderpro'); //NAME OF THE DATABASE
+    const database = client.db('bikeriderpro'); //NAME OF THE DATABASE
 
     // COLLECTIONS UNDER DATABASE
     const bikesCollection = database.collection('bikes');
     const ordersCollection = database.collection('orders');
     const reviewsCollection = database.collection('reviews');
     const usersCollection = database.collection('users');
+
+    /** -----------------READ----------------- **/
 
     // (READ) --> GET ALL BIKES FROM DATABASE
     app.get('/bikes', async (req, res) => {
@@ -44,8 +46,6 @@ async function run() {
 
       res.json(bikes); // send the bikes to client side.
     });
-
-    /** -----------------READ----------------- **/
 
     // (READ) --> GET A SINGLE BIKE INFO FROM DATABASE
     app.get('/bikes/:id', async (req, res) => {
@@ -69,9 +69,14 @@ async function run() {
       res.json(reviews); // send the reviews to client side.
     });
 
-    // (READ) --> GET ALL THE ORDER INFO
+    // (READ) --> GET ALL THE ORDER INFO OR SPECIFIQ ORDER INFO VIA QUERYING
     app.get('/orders', async (req, res) => {
-      const query = {}; // find all orders
+      let query = {}; // find all orders
+
+      if (req.query?.email) {
+        const email = req.query.email;
+        query = { email }; // find the specific user order
+      }
 
       //find in order collection
       const cursor = ordersCollection.find(query);
@@ -80,21 +85,10 @@ async function run() {
       res.json(orders); // send the orders to client side.
     });
 
-    // (READ) --> GET A SPECIFIC USER ORDER FROM DATABASE
-    app.get('/orders', async (req, res) => {
-      const email = req.query.email;
-      const query = { email };
-
-      const cursor = ordersCollection.find(query); // find all the orders
-
-      const ordersOfUser = await cursor.toArray();
-
-      res.json(ordersOfUser); // send the order of a user to client side.
-    });
-
     // (READ) --> GET A SPECIFIC USER INFO FROM DATABASE
     app.get('/users/:email', async (req, res) => {
       const email = req.params.email;
+
       const query = { email };
 
       const user = await usersCollection.findOne(query);
@@ -133,16 +127,6 @@ async function run() {
         ...newOrder,
         status: 'pending',
       });
-
-      res.json(result); // response after adding order info in the database
-    });
-
-    // (CREATE) --> CREATE AN ORDER INFO IN DATABASE
-    app.post('/users', async (req, res) => {
-      const user = req.body; // user info
-
-      // insert the user info in order collection
-      const result = await usersCollection.insertOne(user);
 
       res.json(result); // response after adding order info in the database
     });
@@ -192,15 +176,16 @@ async function run() {
       res.json(result); // send the respone to client side
     });
 
-    app.put('/users/admin', verifyToken, async (req, res) => {
+    app.put('/users/admin', async (req, res) => {
       const user = req.body;
+
       if (user?.requester) {
         const requesterAccount = await usersCollection.findOne({
           email: user.requester,
         }); // find the requester info in database
 
         // check if the requester is admin or not
-        if (requesterAccount.role === 'admin') {
+        if (requesterAccount?.role === 'admin') {
           const filter = { email: user.newAdminEmail };
 
           const updateDoc = { $set: { role: 'admin' } };
@@ -208,11 +193,13 @@ async function run() {
           const result = await usersCollection.updateOne(filter, updateDoc);
 
           res.json(result); // send the result after updating an user role
+        } else {
+          res
+            .status(403)
+            .json({ message: 'you do not have access to make admin' });
         }
       } else {
-        res
-          .status(403)
-          .json({ message: 'you do not have access to make admin' });
+        res.status(404).json({ message: "can't found requester email" });
       }
     });
 
@@ -224,7 +211,7 @@ async function run() {
 
       const query = { _id: ObjectId(id) };
 
-      const result = await ordersCollection.deleteOne(query); // delete the matched bike from database
+      const result = await bikesCollection.deleteOne(query); // delete the matched bike from database
 
       res.json(result); // send the response to client side
     });
