@@ -231,7 +231,7 @@ async function run() {
     });
 
     // (DELETE) --> delete all orders with specific id
-    app.delete('/orders/:id', async (req, res) => {
+    app.delete('/orders/deleteall/:id', async (req, res) => {
       const id = req.params.id;
 
       const query = { _id: ObjectId(id) };
