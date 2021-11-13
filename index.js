@@ -176,6 +176,7 @@ async function run() {
       res.json(result); // send the respone to client side
     });
 
+    //(UPDATE) --> UPDATE THE USER ROLE
     app.put('/users/admin', async (req, res) => {
       const user = req.body;
 
@@ -248,7 +249,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get('/', (req, res) => {
-  res.send('Hello from BIKERIDERPRO');
+  res.send('Hello from BIRIDERPRO');
 });
 
 app.listen(port, () => {
