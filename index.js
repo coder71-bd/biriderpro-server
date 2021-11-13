@@ -199,12 +199,10 @@ async function run() {
             .json({ message: 'you do not have access to make admin' });
         }
       } else {
-        res
-          .status(404)
-          .json({
-            message:
-              'Please make sure the user that you want to make admin is available in database.',
-          });
+        res.status(404).json({
+          message:
+            'Please make sure the user that you want to make admin is available in database.',
+        });
       }
     });
 
@@ -228,6 +226,17 @@ async function run() {
       const query = { _id: ObjectId(id) };
 
       const result = await ordersCollection.deleteOne(query); // delete the matched order from database
+
+      res.json(result); // send the response to user
+    });
+
+    // (DELETE) --> delete all orders with specific id
+    app.delete('/orders/:id', async (req, res) => {
+      const id = req.params.id;
+
+      const query = { _id: ObjectId(id) };
+
+      const result = await ordersCollection.deleteMany(query); // delete all the matched order from database
 
       res.json(result); // send the response to user
     });
