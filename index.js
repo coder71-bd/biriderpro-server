@@ -235,7 +235,8 @@ async function run() {
     app.delete('/orders/deleteall/:id', async (req, res) => {
       const id = req.params.id;
 
-      const query = { product_id: ObjectId(id) };
+      const query = { product_id: id };
+      console.log(query);
 
       const result = await ordersCollection.deleteMany(query); // delete all the matched order from database
 
