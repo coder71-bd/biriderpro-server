@@ -1,14 +1,8 @@
 <h1 align="center">BIRIDERPRO Server side</h1>
 
 <div>
-Client side implemented through this backend <a href="">BIRIDERPRO</a>
+Client side implemented through this backend <a href="https://biriderpro.web.app/">BIRIDERPRO</a>
 </div>
-<p>
-Base URL of bikes item <a href="https://guarded-sierra-90712.herokuapp.com/">BIRIDERPRO</a>
-</p>
-<p>
-Base URL of order item <a href="https://guarded-sierra-90712.herokuapp.com/order">BIRIDERPRO</a>
-</p>
 
 <!-- TABLE OF CONTENTS -->
 
