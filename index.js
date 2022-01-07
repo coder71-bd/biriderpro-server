@@ -26,7 +26,7 @@ async function run() {
   try {
     await client.connect(); // connect to mongodb.
 
-    const database = client.db('bikeriderpro'); //NAME OF THE DATABASE
+    const database = client.db('biriderpro'); //NAME OF THE DATABASE
 
     // COLLECTIONS UNDER DATABASE
     const bikesCollection = database.collection('bikes');
