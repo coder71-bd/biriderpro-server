@@ -46,8 +46,7 @@ async function run() {
     app.get('/reviews', async (req, res) => {
       const query = {}; // find all reviews
       //find in reviews collection
-      const cursor = reviewsCollection.find(query);
-      const reviews = await cursor.toArray();
+      const reviews = await Review.find(query);
       res.json(reviews); // send the reviews to client side.
     });
     // (READ) --> GET ALL THE ORDER INFO OR SPECIFIQ ORDER INFO VIA QUERYING
@@ -80,7 +79,7 @@ async function run() {
     //  (CREATE) --> CREATE AN USER REVIEW IN DATABASE
     app.post('/reviews', async (req, res) => {
       const userReviews = req.body; // user review info
-      const result = await reviewsCollection.insertOne(userReviews);
+      const result = await Bike.insertOne(userReviews);
       res.json(result); // response after adding bike user review in the database
     });
     // (CREATE) --> CREATE AN ORDER INFO IN DATABASE
