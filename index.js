@@ -49,6 +49,7 @@ async function run() {
       const reviews = await Review.find(query);
       res.json(reviews); // send the reviews to client side.
     });
+
     // (READ) --> GET ALL THE ORDER INFO OR SPECIFIQ ORDER INFO VIA QUERYING
     app.get('/orders', async (req, res) => {
       let query = {}; // find all orders
@@ -57,10 +58,10 @@ async function run() {
         query = { email }; // find the specific user order
       }
       //find in order collection
-      const cursor = ordersCollection.find(query);
-      const orders = await cursor.toArray();
+      const orders = await Order.find(query);
       res.json(orders); // send the orders to client side.
     });
+
     // (READ) --> GET A SPECIFIC USER INFO FROM DATABASE
     app.get('/users/:email', async (req, res) => {
       const email = req.params.email;
@@ -86,7 +87,7 @@ async function run() {
     app.post('/orders', async (req, res) => {
       const newOrder = req.body; // order info
       // insert the order info in order collection
-      const result = await ordersCollection.insertOne({
+      const result = await Order.insertMany({
         ...newOrder,
         status: 'pending',
       });
@@ -104,11 +105,7 @@ async function run() {
           status: 'shipped',
         },
       };
-      const result = await ordersCollection.updateOne(
-        filter,
-        updateOrder,
-        options
-      );
+      const result = await Order.updateOne(filter, updateOrder, options);
       res.json(result); // send the response to client
     });
     //(UPDATE) --> UPDATE AN USER
@@ -161,7 +158,7 @@ async function run() {
     app.delete('/orders/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
-      const result = await ordersCollection.deleteOne(query); // delete the matched order from database
+      const result = await Order.deleteOne(query); // delete the matched order from database
       res.json(result); // send the response to user
     });
     // (DELETE) --> delete all orders with specific id
@@ -169,7 +166,7 @@ async function run() {
       const id = req.params.id;
       const query = { product_id: id };
       console.log(query);
-      const result = await ordersCollection.deleteMany(query); // delete all the matched order from database
+      const result = await Order.deleteMany(query); // delete all the matched order from database
       res.json(result); // send the response to user
     });
   } finally {
