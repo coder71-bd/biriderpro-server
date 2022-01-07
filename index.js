@@ -66,7 +66,7 @@ async function run() {
     app.get('/users/:email', async (req, res) => {
       const email = req.params.email;
       const query = { email };
-      const user = await usersCollection.findOne(query);
+      const user = await User.findOne(query);
       let isAdmin = user?.role === 'admin';
       res.json({ admin: isAdmin }); // send the admin status of user to client side
     });
@@ -114,11 +114,7 @@ async function run() {
       const filter = { email: user.email };
       const options = { upsert: true };
       const updateDoc = { $set: user };
-      const result = await usersCollection.updateOne(
-        filter,
-        updateDoc,
-        options
-      );
+      const result = await User.updateOne(filter, updateDoc, options);
       res.json(result); // send the respone to client side
     });
     //(UPDATE) --> UPDATE THE USER ROLE
@@ -132,7 +128,7 @@ async function run() {
         if (requesterAccount?.role === 'admin') {
           const filter = { email: user.newAdminEmail };
           const updateDoc = { $set: { role: 'admin' } };
-          const result = await usersCollection.updateOne(filter, updateDoc);
+          const result = await User.updateOne(filter, updateDoc);
           res.json(result); // send the result after updating an user role
         } else {
           res
